@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "description": "Lunch",
+        "amount": 20.5,
+        "date": "2025-06-03 15:12:10 pm"
+    },
+    {
+        "id": 2,
+        "description": "Lunch",
+        "amount": 20.5,
+        "date": "2025-06-03 15:17:01 pm"
+    },
+    {
+        "id": 3,
+        "description": "Lunch",
+        "amount": 20.5,
+        "date": "2025-06-03 15:17:06 pm"
+    },
+    {
+        "id": 4,
+        "description": "Lunch",
+        "amount": 20.5,
+        "date": "2025-06-03 15:18:23 pm"
+    },
+    {
+        "id": 5,
+        "description": "Lunch",
+        "amount": 20.5,
+        "date": "2025-06-03 15:18:27 pm"
+    }
+]
