@@ -29,9 +29,12 @@ function parseArgs($argv) {
     $id = end($expensesJson)["id"] + 1;
 
     $array["id"] = $id ?? 1;
-    $array["description"] = $argv[3];
+    $array["description"] = $argv[3] ?? null;
     $array["amount"] = floatval($argv[5] ?? null);
     $array["date"] = date("Y-m-d H:i:s a");
+    if(isset($argv[7])) {
+        $array["idUpdate"] = $argv[7] ?? null;
+    }
 
     return $array;
 }
@@ -46,16 +49,18 @@ switch ($command) {
     case "list":
         viewAllExpenses();
         break;
-    case "summary":
-        summary();
+    case "update":
+        update($args, $argv);
+        break;
+    case "delete":
+        delete($args, $argv);
         break;
     default:
         echo "Comandos disponibles: add, list, summary, delete, update, set-budget, export\n";
         break;
 }
 
-function addExpense($args, $argv) {
-    
+function validate($args, $argv) {
     if (
         !isset($argv[2]) || !isset($argv[4]) || 
         !isset($args["description"]) || !isset($args["amount"]) || 
@@ -63,17 +68,32 @@ function addExpense($args, $argv) {
         !isset($argv[5])
     ) {
         echo "\n\033[31m Tienes que agregar una descripcion y un monto \033[0m \n";
-
         echo "Ejemplo: \033[33mphp\033[0m expense-tracker.php add \033[90m--description\033[0m \033[36m\"Lunch\"\033[0m \033[90m--amount\033[0m 20 \n\n";
-
         return;
     }
 
-    $expensesJson = getFileExpenses();
-    $expensesJson[] = $args;
-    $expenses = json_encode($expensesJson, JSON_PRETTY_PRINT);
+    //Validate if exist ID para actualizar;
+    if(!array_key_exists("idUpdate", $args)) {
+        echo "\n\033[31m Error:\033[0m Para actualizar necesitas agregar un id \n";
+        echo "Ejemplo: \033[33mphp\033[0m expense-tracker.php add \033[90m--description\033[0m \033[36m\"Lunch\"\033[0m \033[90m--amount\033[0m 20 \033[90m--id\033[0m 1 \n\n";
+        return;
+    }
+    return true;
+}
 
-    file_put_contents(EXPENSES_FILE, $expenses);
+function addExpense($args, $argv) {
+    
+    $validate = validate($args, $argv);
+
+    if($validate) {
+        $expensesJson = getFileExpenses();
+        $expensesJson[] = $args;
+        $expenses = json_encode($expensesJson, JSON_PRETTY_PRINT);
+
+        file_put_contents(EXPENSES_FILE, $expenses);
+
+        echo "\033[32m Expense added successfully\033[0m (ID: {$args['id']})";
+    }
 }
 
 function viewAllExpenses() {
@@ -114,6 +134,34 @@ function listFormated($rows) {
     echo "\n";
 }
 
-function summary() {
+function update($args, $argv) {
+    $validate = validate($args, $argv);
 
+    if($validate) {
+        $expenses = getFileExpenses();
+        foreach ($expenses as $key => $value) {
+            if($value["id"] == $args["idUpdate"]) {
+                $expenses[$key]["description"] = $args["description"];
+                $expenses[$key]["amount"] = $args["amount"];
+            }
+        }
+        $expensesEncode = json_encode($expenses, JSON_PRETTY_PRINT);
+        file_put_contents(EXPENSES_FILE, $expensesEncode);
+
+        echo "\033[32m Expense updated successfully\033[0m (ID: {$args['idUpdate']})";
+    }       
+}
+
+function delete($args, $argv) {
+
+    $expenses = getFileExpenses();
+    foreach ($expenses as $key => $value) {
+        if($value["id"] == $argv[3]) {
+            unset($expenses[$key]);
+        }
+    }
+    $expensesEncode = json_encode($expenses, JSON_PRETTY_PRINT);
+    file_put_contents(EXPENSES_FILE, $expensesEncode);
+
+    echo "\033[32m Expense deleted successfully\033[0m (ID: {$argv[3]})";
 }
