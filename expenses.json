@@ -1,32 +1,32 @@
-[
-    {
+{
+    "0": {
         "id": 1,
         "description": "Lunch",
         "amount": 20.5,
         "date": "2025-06-03 15:12:10 pm"
     },
-    {
+    "1": {
         "id": 2,
-        "description": "Lunch",
-        "amount": 20.5,
+        "description": "Mouse",
+        "amount": 5000,
         "date": "2025-06-03 15:17:01 pm"
     },
-    {
-        "id": 3,
+    "9": {
+        "id": 10,
         "description": "Lunch",
-        "amount": 20.5,
-        "date": "2025-06-03 15:17:06 pm"
+        "amount": 20,
+        "date": "2025-06-04 09:43:47 am"
     },
-    {
-        "id": 4,
-        "description": "Lunch",
-        "amount": 20.5,
-        "date": "2025-06-03 15:18:23 pm"
+    "12": {
+        "id": 13,
+        "description": "Alquiler",
+        "amount": 20,
+        "date": "2025-06-04 10:00:19 am"
     },
-    {
-        "id": 5,
-        "description": "Lunch",
-        "amount": 20.5,
-        "date": "2025-06-03 15:18:27 pm"
+    "13": {
+        "id": 14,
+        "description": "Keyboard",
+        "amount": 20,
+        "date": "2025-06-04 10:02:12 am"
     }
-]
+}
