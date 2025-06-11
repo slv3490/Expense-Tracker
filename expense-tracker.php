@@ -31,7 +31,7 @@ function parseArgs($argv) {
     $array["id"] = $id ?? 1;
     $array["description"] = $argv[3] ?? null;
     $array["amount"] = floatval($argv[5] ?? null);
-    $array["date"] = date("Y-m-d H:i:s a");
+    $array["date"] = date("Y-m-d");
     if(isset($argv[7])) {
         $array["idUpdate"] = $argv[7] ?? null;
     }
@@ -53,7 +53,10 @@ switch ($command) {
         update($args, $argv);
         break;
     case "delete":
-        delete($args, $argv);
+        delete($argv);
+        break;
+    case "summary":
+        summary($argv);
         break;
     default:
         echo "Comandos disponibles: add, list, summary, delete, update, set-budget, export\n";
@@ -69,13 +72,6 @@ function validate($args, $argv) {
     ) {
         echo "\n\033[31m Tienes que agregar una descripcion y un monto \033[0m \n";
         echo "Ejemplo: \033[33mphp\033[0m expense-tracker.php add \033[90m--description\033[0m \033[36m\"Lunch\"\033[0m \033[90m--amount\033[0m 20 \n\n";
-        return;
-    }
-
-    //Validate if exist ID para actualizar;
-    if(!array_key_exists("idUpdate", $args)) {
-        echo "\n\033[31m Error:\033[0m Para actualizar necesitas agregar un id \n";
-        echo "Ejemplo: \033[33mphp\033[0m expense-tracker.php add \033[90m--description\033[0m \033[36m\"Lunch\"\033[0m \033[90m--amount\033[0m 20 \033[90m--id\033[0m 1 \n\n";
         return;
     }
     return true;
@@ -135,24 +131,35 @@ function listFormated($rows) {
 }
 
 function update($args, $argv) {
+    //Validate if exist ID in console;
+    if(!array_key_exists("idUpdate", $args)) {
+        echo "\n\033[31m Error:\033[0m Para actualizar necesitas agregar un id \n";
+        echo "Ejemplo: \033[33mphp\033[0m expense-tracker.php update \033[90m--description\033[0m \033[36m\"Lunch\"\033[0m \033[90m--amount\033[0m 20 \033[90m--id\033[0m 1 \n\n";
+        return;
+    }
     $validate = validate($args, $argv);
 
     if($validate) {
         $expenses = getFileExpenses();
+        $existIdOnJsonFile = false;
+
         foreach ($expenses as $key => $value) {
             if($value["id"] == $args["idUpdate"]) {
                 $expenses[$key]["description"] = $args["description"];
                 $expenses[$key]["amount"] = $args["amount"];
+                $existIdOnJsonFile = true;
             }
         }
-        $expensesEncode = json_encode($expenses, JSON_PRETTY_PRINT);
-        file_put_contents(EXPENSES_FILE, $expensesEncode);
-
-        echo "\033[32m Expense updated successfully\033[0m (ID: {$args['idUpdate']})";
+        if($existIdOnJsonFile) {
+            $expensesEncode = json_encode($expenses, JSON_PRETTY_PRINT);
+            file_put_contents(EXPENSES_FILE, $expensesEncode);
+    
+            echo "\033[32m Expense updated successfully\033[0m (ID: {$args['idUpdate']})";
+        }
     }       
 }
 
-function delete($args, $argv) {
+function delete($argv) {
 
     $expenses = getFileExpenses();
     foreach ($expenses as $key => $value) {
@@ -164,4 +171,37 @@ function delete($args, $argv) {
     file_put_contents(EXPENSES_FILE, $expensesEncode);
 
     echo "\033[32m Expense deleted successfully\033[0m (ID: {$argv[3]})";
+}
+
+//TODO: hacer la funcionalidad de ver los gastos de un mes especificado por el usuario
+function summary($argv) {
+    $range = range(1, 12);
+
+    $expenses = getFileExpenses();
+    $amount = 0;
+
+    foreach ($expenses as $key => $value) {
+        $amount += $value["amount"];
+        dd($value["date"]);
+    }
+
+
+    // if(isset($argv[2]) && $argv[2] === "--month" && isset($argv[3])) {
+    //     foreach ($range as $key => $value) {
+    //         if(intval($argv[3]) === $value) {
+    //             $expenses = getFileExpenses();
+    //             $amount = 0;
+            
+    //             foreach ($expenses as $key => $value) {
+    //                 $amount += $value["amount"];
+    //             }
+            
+    //             echo "\nTotal Expenses: \033[32m$${amount}\033[0m\n\n";
+    //         }
+    //     }
+    //     if(!isset($amount)) {
+    //         echo "\n\033[31mError:\033[0m El numero ingresado no es un mes válido\n\n";
+    //         return;
+    //     }
+    // }
 }
