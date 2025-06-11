@@ -2,31 +2,37 @@
     "0": {
         "id": 1,
         "description": "Lunch",
-        "amount": 20.5,
-        "date": "2025-06-03 15:12:10 pm"
+        "amount": 50,
+        "date": "2025-06-03"
     },
     "1": {
         "id": 2,
         "description": "Mouse",
-        "amount": 5000,
-        "date": "2025-06-03 15:17:01 pm"
+        "amount": 300,
+        "date": "2025-06-03"
     },
     "9": {
         "id": 10,
         "description": "Lunch",
-        "amount": 20,
-        "date": "2025-06-04 09:43:47 am"
+        "amount": 50,
+        "date": "2025-06-04"
     },
     "12": {
         "id": 13,
         "description": "Alquiler",
-        "amount": 20,
-        "date": "2025-06-04 10:00:19 am"
+        "amount": 100,
+        "date": "2025-06-04"
     },
     "13": {
         "id": 14,
         "description": "Keyboard",
         "amount": 20,
-        "date": "2025-06-04 10:02:12 am"
+        "date": "2025-06-04"
+    },
+    "14": {
+        "id": 15,
+        "description": "m",
+        "amount": 200,
+        "date": "2025-06-10"
     }
 }
