@@ -173,35 +173,34 @@ function delete($argv) {
     echo "\033[32m Expense deleted successfully\033[0m (ID: {$argv[3]})";
 }
 
-//TODO: hacer la funcionalidad de ver los gastos de un mes especificado por el usuario
 function summary($argv) {
     $range = range(1, 12);
 
     $expenses = getFileExpenses();
     $amount = 0;
 
-    foreach ($expenses as $key => $value) {
-        $amount += $value["amount"];
-        dd($value["date"]);
+    if(isset($argv[2]) && $argv[2] === "--month" && isset($argv[3])) {
+        foreach ($range as $key => $value) {
+            if(intval($argv[3]) === $value) {
+                foreach ($expenses as $key => $value) {
+                    $date = $value["date"];
+                    $position = strpos($date, $argv[3]);
+                    if($position) {
+                        $amount += $value["amount"];
+                    }
+                }
+                echo "\nTotal Expenses of month ${argv[3]}: \033[32m$${amount}\033[0m\n\n";
+            }
+        }
+        if(!in_array($argv[3], $range)) {
+            echo "\n\033[31m Error:\033[0m El mes ingresado es incorrecto, el valor debe ser entre 1 y 12 \n\n";
+        }
     }
 
-
-    // if(isset($argv[2]) && $argv[2] === "--month" && isset($argv[3])) {
-    //     foreach ($range as $key => $value) {
-    //         if(intval($argv[3]) === $value) {
-    //             $expenses = getFileExpenses();
-    //             $amount = 0;
-            
-    //             foreach ($expenses as $key => $value) {
-    //                 $amount += $value["amount"];
-    //             }
-            
-    //             echo "\nTotal Expenses: \033[32m$${amount}\033[0m\n\n";
-    //         }
-    //     }
-    //     if(!isset($amount)) {
-    //         echo "\n\033[31mError:\033[0m El numero ingresado no es un mes válido\n\n";
-    //         return;
-    //     }
-    // }
+    if(count($argv) === 2) {
+        foreach ($expenses as $key => $value) {
+            $amount += $value["amount"];
+        }
+        echo "\nTotal Expenses: \033[32m$${amount}\033[0m\n\n";
+    }
 }
